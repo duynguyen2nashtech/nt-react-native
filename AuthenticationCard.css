@@ -1,0 +1,562 @@
+/* ===========================
+   Authentication Card Styles
+   =========================== */
+
+/* Main Container */
+.auth-card {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 32px;
+  background-color: #FFFFFF;
+  border: 1px solid #F3F4F6;
+  border-radius: 12px;
+  box-shadow: 0px 8px 10px -6px rgba(0, 0, 0, 0.1),
+              0px 20px 25px -5px rgba(0, 0, 0, 0.1);
+  width: 358px;
+  margin: 0 auto;
+}
+
+/* ===== HEADER SECTION ===== */
+.header-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  height: 144px;
+}
+
+.header-overlay {
+  width: 64px;
+  height: 64px;
+  border-radius: 9999px;
+  background-color: rgba(13, 242, 242, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 0px;
+}
+
+.header-heading {
+  font-family: Inter;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.33;
+  text-align: center;
+  color: #1F2937;
+  margin: 0;
+}
+
+.header-subtitle {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
+  color: #6B7280;
+  margin: 0;
+}
+
+/* ===== FORM TOGGLE ===== */
+.form-toggle {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  padding: 4px;
+  gap: 0;
+  background-color: #F3F4F6;
+  border-radius: 12px;
+}
+
+.toggle-button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0px;
+  border-radius: 12px;
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.43;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  background-color: transparent;
+}
+
+.toggle-button.active {
+  background-color: #FFFFFF;
+  color: #1F2937;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+}
+
+.toggle-button:not(.active) {
+  color: #6B7280;
+  background-color: transparent;
+}
+
+/* ===== AUTH FORM ===== */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Form Fields */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.form-label {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.43;
+  color: #374151;
+  margin: 0;
+  padding: 0;
+}
+
+.form-input {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 12px;
+  background-color: #FFFFFF;
+  border: 1px solid #D1D5DB;
+  border-radius: 12px;
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.21;
+  color: #6B7280;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #0DF2F2;
+  box-shadow: 0 0 0 3px rgba(13, 242, 242, 0.1);
+}
+
+/* Forgot Password */
+.forgot-password-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.forgot-password-link {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.43;
+  color: #0DF2F2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.forgot-password-link:hover {
+  opacity: 0.8;
+}
+
+/* Biometric Checkbox */
+.biometric-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 8px 0;
+}
+
+.biometric-checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #D1D5DB;
+  border-radius: 4px;
+  cursor: pointer;
+  appearance: none;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.biometric-checkbox:checked {
+  background-color: #0DF2F2;
+  border-color: #0DF2F2;
+}
+
+.biometric-label {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.43;
+  color: #4B5563;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.primary-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #0DF2F2;
+  border: none;
+  border-radius: 12px;
+  font-family: Inter;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
+  color: #111827;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1),
+              0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.primary-button:hover {
+  box-shadow: 0px 4px 8px -4px rgba(0, 0, 0, 0.15),
+              0px 10px 20px -3px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.primary-button:active {
+  transform: translateY(0);
+  box-shadow: 0px 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+/* Secondary Biometric Button */
+.secondary-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #FFFFFF;
+  border: 2px solid rgba(13, 242, 242, 0.3);
+  border-radius: 12px;
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
+  color: #0DF2F2;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.secondary-button:hover {
+  border-color: rgba(13, 242, 242, 0.5);
+  background-color: rgba(13, 242, 242, 0.05);
+}
+
+.secondary-button:active {
+  background-color: rgba(13, 242, 242, 0.1);
+}
+
+/* ===== SOCIAL AUTHENTICATION ===== */
+.social-auth-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.divider-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  gap: 0;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background-color: #E5E7EB;
+  align-self: center;
+}
+
+.divider-text {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  padding: 0px 8px;
+  justify-content: center;
+  align-items: center;
+  background-color: #FFFFFF;
+}
+
+.divider-label {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.43;
+  text-align: center;
+  color: #6B7280;
+  margin: 0;
+}
+
+.social-buttons-container {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  width: 100%;
+}
+
+.social-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  gap: 8px;
+  padding: 10px 30px;
+  background-color: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.43;
+  text-align: center;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.social-button:hover {
+  background-color: #F9FAFB;
+  border-color: #D1D5DB;
+}
+
+.social-button:active {
+  background-color: #F3F4F6;
+}
+
+.social-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.facebook-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ===== FOOTER ===== */
+.footer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.footer-text {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.33;
+  text-align: center;
+  color: #9CA3AF;
+  margin: 0;
+  padding: 0;
+  max-width: 277px;
+}
+
+/* ===========================
+   Responsive Design
+   =========================== */
+
+@media (max-width: 768px) {
+  .auth-card {
+    width: 100%;
+    max-width: 358px;
+    padding: 24px;
+    gap: 24px;
+  }
+
+  .social-buttons-container {
+    flex-direction: column;
+  }
+
+  .social-button {
+    width: 100%;
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    width: 100%;
+    padding: 20px;
+    gap: 20px;
+    border-radius: 8px;
+  }
+
+  .header-heading {
+    font-size: 20px;
+  }
+
+  .header-subtitle {
+    font-size: 14px;
+  }
+
+  .form-input {
+    padding: 8px 10px;
+    font-size: 16px;
+  }
+
+  .primary-button,
+  .secondary-button {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+}
+
+/* ===========================
+   Utility Classes
+   =========================== */
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.mb-2 {
+  margin-bottom: 8px;
+}
+
+.mb-4 {
+  margin-bottom: 16px;
+}
+
+.mt-2 {
+  margin-top: 8px;
+}
+
+.mt-4 {
+  margin-top: 16px;
+}
+
+/* ===========================
+   Dark Mode Support
+   =========================== */
+
+@media (prefers-color-scheme: dark) {
+  .auth-card {
+    background-color: #1F2937;
+    border-color: #374151;
+  }
+
+  .toggle-button.active {
+    background-color: #374151;
+    color: #F3F4F6;
+  }
+
+  .toggle-button:not(.active) {
+    color: #9CA3AF;
+  }
+
+  .form-input {
+    background-color: #111827;
+    border-color: #4B5563;
+    color: #D1D5DB;
+  }
+
+  .form-input:focus {
+    border-color: #0DF2F2;
+    box-shadow: 0 0 0 3px rgba(13, 242, 242, 0.1);
+  }
+
+  .form-label {
+    color: #D1D5DB;
+  }
+
+  .header-heading {
+    color: #F3F4F6;
+  }
+
+  .header-subtitle,
+  .divider-label {
+    color: #9CA3AF;
+  }
+
+  .divider-text {
+    background-color: #1F2937;
+  }
+
+  .social-button {
+    background-color: #111827;
+    border-color: #4B5563;
+    color: #D1D5DB;
+  }
+
+  .social-button:hover {
+    background-color: #1F2937;
+    border-color: #6B7280;
+  }
+
+  .social-button:active {
+    background-color: #374151;
+  }
+
+  .footer-text {
+    color: #6B7280;
+  }
+
+  .secondary-button {
+    background-color: transparent;
+    border-color: rgba(13, 242, 242, 0.4);
+  }
+
+  .secondary-button:hover {
+    background-color: rgba(13, 242, 242, 0.08);
+    border-color: rgba(13, 242, 242, 0.6);
+  }
+}
