@@ -17,7 +17,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
             const result = await AuthService.login(username, password);
             if (result?.user) {
-                setUserState(result.user); // ✅ Context only
+                setUserState(result.user);
                 return true;
             }
             return false;
@@ -27,7 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     const signOut = () => {
-        setUserState(null); // ✅ Context only
+        setUserState(null); 
     };
 
     return (

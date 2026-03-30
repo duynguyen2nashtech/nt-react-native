@@ -5,6 +5,18 @@ import { DatabaseService } from './database-service';
 
 const BASE_URL = 'http://10.0.2.2:3000';
 
+// ── Private helper — not exported ─────────────────────────────────────────────
+function decodeUserIdFromToken(token: string): number {
+    try {
+        const payload = token.split('.')[1];
+        const decoded = JSON.parse(atob(payload));
+        return decoded.userId ?? decoded.id ?? decoded.sub;
+    } catch {
+        console.warn('[decodeUserIdFromToken] Failed to decode token');
+        return -1;
+    }
+}
+
 export interface ProfileData {
     id: number;
     username: string;
@@ -72,55 +84,59 @@ export const UserService = {
      * Falls back to local SQLite if network fails.
      */
     async getProfile(): Promise<ProfileData | null> {
+    try {
+        const token = await TokenService.getToken();
 
-        try {
-
-            const token = await TokenService.getToken();
-
-            if (!token) {
-                console.warn('getProfile: no token — reading from SQLite');
-                return await DatabaseService.getProfile();
-            }
-
-            const response = await fetch(`${BASE_URL}/user`, {
-                method: 'GET',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            const rawText = await response.text();
-
-            console.log('getProfile status:', response.status);
-            console.log('getProfile raw:', rawText);
-
-            const result = JSON.parse(rawText);
-
-            if (result.status && result.data) {
-
-                await DatabaseService.saveProfile(result.data);
-
-                return result.data;
-            }
-
-            console.warn('API failed — fallback SQLite');
-
-            return await DatabaseService.getProfile();
-
-        } catch (e) {
-
-            console.warn('network error — fallback SQLite', e);
-
-            return await DatabaseService.getProfile();
+        if (!token) {
+            console.warn('getProfile: no token — reading from SQLite');
+            // ⚠️ No token = no userId = can't safely query
+            // Better to return null than wrong profile
+            return null;
         }
-    },
+
+        const response = await fetch(`${BASE_URL}/user`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const rawText = await response.text();
+        const result  = JSON.parse(rawText);
+
+        if (result.status && result.data) {
+            await DatabaseService.saveProfile(result.data);
+            return result.data; // ✅ always use API data when available
+        }
+
+        console.warn('API failed — fallback SQLite');
+        // ✅ FIXED: pass userId decoded from token
+        const userId = decodeUserIdFromToken(token);
+        return await DatabaseService.getProfile(userId);
+
+    } catch (e) {
+        console.warn('network error — fallback SQLite', e);
+        const token = await TokenService.getToken();
+        if (!token) return null;
+        // ✅ FIXED: pass userId
+        const userId = decodeUserIdFromToken(token);
+        return await DatabaseService.getProfile(userId);
+    }
+},
 
     /**
      * Call this on logout to wipe the local SQLite profile.
      */
     async clearLocalProfile(): Promise<void> {
+        const token = await TokenService.getToken();
+
+        // ✅ Clear only THIS user's profile, not all profiles
+        if (token) {
+            const userId = decodeUserIdFromToken(token);
+            await DatabaseService.clearProfile(userId); // ← specific user
+        }
+
         await TokenService.clearAll();
-        await DatabaseService.clearProfile();
-    },
+},
 };

@@ -59,14 +59,15 @@ export const DatabaseService = {
         console.log('[DB] Profile saved:', profile.username);
     },
 
-    async getProfile(): Promise<ProfileData | null> {
+    async getProfile(userId: number): Promise<ProfileData | null> {
         const database = await getDb();
         const [result] = await database.executeSql(
-            'SELECT * FROM profile LIMIT 1;',
+            'SELECT * FROM profile WHERE id = ? LIMIT 1;', // ← WHERE id
+            [userId],
         );
 
         if (result.rows.length === 0) {
-            console.log('[DB] No local profile found');
+            console.log('[DB] No local profile found for userId:', userId);
             return null;
         }
 
@@ -84,9 +85,19 @@ export const DatabaseService = {
         };
     },
 
-    async clearProfile(): Promise<void> {
+    async clearProfile(userId: number): Promise<void> {
+        const database = await getDb();
+        await database.executeSql(
+            'DELETE FROM profile WHERE id = ?;',
+            [userId],
+        );
+        console.log('[DB] Profile cleared for userId:', userId);
+    },
+
+     // ✅ Clear ALL profiles (for logout)
+    async clearAllProfiles(): Promise<void> {
         const database = await getDb();
         await database.executeSql('DELETE FROM profile;');
-        console.log('[DB] Profile cleared');
+        console.log('[DB] All profiles cleared');
     },
 };
