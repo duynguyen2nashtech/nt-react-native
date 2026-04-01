@@ -1,8 +1,6 @@
 /**
  * Tests for ProfileScreen
  * Location: src/modules/profile/screens/__tests__/profile-screen.test.tsx
- *
- * Run: npx jest profile-screen.test.tsx
  */
 
 import React from 'react';
@@ -14,13 +12,17 @@ import { UserService, ProfileData } from '../../services/user-service';
 
 jest.mock('../../services/user-service');
 
-jest.mock('../../../auth/context/auth-context', () => ({
-    useAuth: () => ({
-        signOut: mockSignout,
-    }),
+const mockDispatch = jest.fn();
+
+jest.mock('../../../../stores/store', () => ({
+    useAppDispatch: () => mockDispatch,
+    useAppSelector: jest.fn(),
 }));
 
-const mockSignout= jest.fn();
+jest.mock('../../../auth/store/authSlice', () => ({
+    logout:          jest.fn(() => ({ type: 'auth/logout' })),
+    selectIsLoggedIn: jest.fn(),
+}));
 
 const mockNavigation = {
     goBack:   jest.fn(),
@@ -47,12 +49,14 @@ function renderScreen() {
 
 describe('ProfileScreen', () => {
 
-    beforeEach(() => jest.clearAllMocks());
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockDispatch.mockResolvedValue({ type: 'auth/logout/fulfilled' });
+    });
 
     // ── Loading state ──────────────────────────────────────────────────────────
 
     it('shows loading indicator while fetching profile', () => {
-        // Never resolves — stays in loading state
         (UserService.getProfile as jest.Mock).mockReturnValue(new Promise(() => {}));
 
         renderScreen();
@@ -151,7 +155,8 @@ describe('ProfileScreen', () => {
         expect(mockNavigation.goBack).toHaveBeenCalledTimes(1);
     });
 
-    it('calls logout when logout row is pressed', async () => {
+    it('dispatches logout when logout row is pressed', async () => {
+        const { logout } = require('../../../auth/store/authSlice');
         (UserService.getProfile as jest.Mock).mockResolvedValue(mockProfile);
 
         renderScreen();
@@ -160,6 +165,9 @@ describe('ProfileScreen', () => {
 
         fireEvent.press(screen.getByTestId('logout-button'));
 
-        expect(mockSignout).toHaveBeenCalledTimes(1);
+        await waitFor(() => {
+            expect(mockDispatch).toHaveBeenCalled();
+            expect(logout).toHaveBeenCalled();
+        });
     });
 });

@@ -18,28 +18,26 @@ import {
     selectShopError,
     selectSearch,
 } from '../store/shopSlice';
-
+import { selectIsLoggedIn } from '../../auth/store/authSlice';
 import ProductList from '../components/ProductList';
 import type { HomeScreenProps } from '../navigation/shop-navigator';
-import { useAuth } from '../../auth/context/auth-context';
-
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     const dispatch = useAppDispatch();
 
-    const { user } = useAuth();  
+    const isLoggedIn = useAppSelector(selectIsLoggedIn);
     const products = useAppSelector(selectFilteredProducts);
     const status = useAppSelector(selectListStatus);
     const error = useAppSelector(selectShopError);
     const search = useAppSelector(selectSearch);
 
     useEffect(() => {
-        if (user && status === 'idle') {
+        if (isLoggedIn && status === 'idle') {
             dispatch(fetchProducts());
         }
-    }, [user, status, dispatch]);
+    }, [isLoggedIn, status, dispatch]);
 
-    if (!user) {
+    if (!isLoggedIn) {
         return (
             <SafeAreaView style={styles.safe}>
                 <View style={styles.centered}>

@@ -1,6 +1,5 @@
+import { BASE_URL } from '../config/api-config';
 import { TokenService } from './token-service';
-
-const BASE_URL = 'http://10.0.2.2:3000';
 
 export interface Review {
     id: number;

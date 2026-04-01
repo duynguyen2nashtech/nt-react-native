@@ -15,7 +15,9 @@ import {
     Alert,
 } from 'react-native';
 import { UserService, ProfileData } from '../services/user-service';
-import { useAuth } from '../../auth/context/auth-context';
+// import { useAuth } from '../../auth/context/auth-context';
+import { logout } from '../../auth/store/authSlice';
+import { useAppDispatch } from '../../../stores/store';
 
 interface ProfileScreenProps {
     navigation: any;
@@ -226,17 +228,24 @@ const EditField: React.FC<EditFieldProps> = ({
 
 // ── Profile Screen ────────────────────────────────────────────────────────────
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
-    const { signOut } = useAuth();
-    const [profile,    setProfile]    = useState<ProfileData | null>(null);
-    const [isLoading,  setIsLoading]  = useState(true);
-    const [error,      setError]      = useState<string | null>(null);
+    const dispatch = useAppDispatch();
+    // remove: const { signOut } = useAuth();
+    
+    const [profile, setProfile] = useState<ProfileData | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [editVisible, setEditVisible] = useState(false);
+
+    const handleLogout = async () => {
+        await dispatch(logout());
+        // isLoggedIn flips to false in Redux → App.tsx auto-navigates to SignIn
+    };
 
     useEffect(() => {
         UserService.getProfile()
             .then(data => {
                 if (!data) {
-                    signOut(); // ← token expired, kick to login
+                    handleLogout(); // token expired
                     return;
                 }
                 setProfile(data);
@@ -349,7 +358,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                 <TouchableOpacity
                     testID="logout-button"
                     style={styles.menuCard}
-                    onPress={async () => await signOut()}
+                    onPress={async () => await handleLogout()}
                 >
                     <View style={styles.menuLeft}>
                         <View style={[styles.menuIconBox, { backgroundColor: '#FEF2F2' }]}>

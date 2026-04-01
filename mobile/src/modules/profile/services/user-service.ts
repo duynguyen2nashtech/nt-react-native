@@ -1,17 +1,22 @@
 
+import { decode } from 'base-64';
 import { TokenService } from '../../../shared/services/token-service';
 import { DatabaseService } from './database-service';
+import { BASE_URL } from '../../../shared/config/api-config';
 
 
-const BASE_URL = 'http://10.0.2.2:3000';
+
 
 function decodeUserIdFromToken(token: string): number {
     try {
-        const payload = token.split('.')[1];
-        const decoded = JSON.parse(atob(payload));
+        const payload = token.split('.')[1]
+            .replace(/-/g, '+')
+            .replace(/_/g, '/');
+        const padded  = payload + '='.repeat((4 - payload.length % 4) % 4);
+        const decoded = JSON.parse(decode(padded));
         return decoded.userId ?? decoded.id ?? decoded.sub;
-    } catch {
-        console.warn('[decodeUserIdFromToken] Failed to decode token');
+    } catch (e) {
+        console.warn('[decodeUserIdFromToken] Failed to decode token', e);
         return -1;
     }
 }
@@ -54,9 +59,6 @@ export const UserService = {
 
         const rawText = await response.text();
 
-        console.log('register status:', response.status);
-        console.log('register raw:', rawText);
-
         const result = JSON.parse(rawText);
 
         if (!response.ok || !result.status) {
@@ -71,8 +73,6 @@ export const UserService = {
 
         // save profile
         await DatabaseService.saveProfile(user);
-
-        console.log('[REGISTER] token & profile saved');
 
         return user;
     },
@@ -164,9 +164,11 @@ export const UserService = {
 
         if (token) {
             const userId = decodeUserIdFromToken(token);
-            await DatabaseService.clearProfile(userId); 
+            if (userId !== -1) {
+                await DatabaseService.clearProfile(userId);
+            }
         }
 
         await TokenService.clearAll();
-},
+    },
 };

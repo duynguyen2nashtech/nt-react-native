@@ -10,17 +10,18 @@ import {
     SafeAreaView,
     Platform,
 } from 'react-native';
-import { useAuth } from '../context/auth-context';
+// import { useAuth } from '../context/auth-context';
 import { AuthService } from '../services/auth-service';
-
+import { login } from '../store/authSlice';
+import { useAppDispatch } from '../../../stores/store';
 
 interface ISignInScreen {
     navigation: any;
 }
 
 export const SignInScreen: FC<ISignInScreen> = ({ navigation }) => {
-    const { login } = useAuth();
-
+    // const { login } = useAuth();
+    const dispatch = useAppDispatch();
     const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
     const [username, setUsername] = useState('duynguyen');
     const [password, setPassword] = useState('12345678');
@@ -29,8 +30,8 @@ export const SignInScreen: FC<ISignInScreen> = ({ navigation }) => {
 
     async function onPressSignIn() {
         try {
-            const success = await login(username, password);
-            if (success) {
+            const result = await dispatch(login({ username, password }));
+            if (login.fulfilled.match(result)) {
                 navigation.replace('Main');
             } else {
                 Alert.alert('Login failed', 'Invalid username or password.');

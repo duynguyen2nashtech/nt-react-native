@@ -26,7 +26,6 @@ async function getDb(): Promise<SQLite.SQLiteDatabase> {
         );
     `);
 
-    console.log('[DB] Initialized');
     return db;
 }
 
@@ -48,7 +47,6 @@ export const DatabaseService = {
                 profile.role,
             ],
         );
-        console.log('[DB] Profile saved:', profile.username);
     },
 
     async getProfile(userId: number): Promise<ProfileData | null> {
@@ -59,12 +57,10 @@ export const DatabaseService = {
         );
 
         if (result.rows.length === 0) {
-            console.log('[DB] No local profile found for userId:', userId);
             return null;
         }
 
         const row = result.rows.item(0);
-        console.log('[DB] Profile loaded:', row.username);
 
         return {
             id:        row.id,
@@ -83,12 +79,10 @@ export const DatabaseService = {
             'DELETE FROM profile WHERE id = ?;',
             [userId],
         );
-        console.log('[DB] Profile cleared for userId:', userId);
     },
 
     async clearAllProfiles(): Promise<void> {
         const database = await getDb();
         await database.executeSql('DELETE FROM profile;');
-        console.log('[DB] All profiles cleared');
     },
 };

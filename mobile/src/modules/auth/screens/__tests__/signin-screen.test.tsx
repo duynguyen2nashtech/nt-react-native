@@ -1,8 +1,6 @@
 /**
  * Tests for SignInScreen
  * Location: src/modules/auth/screens/__tests__/signin-screen.test.tsx
- *
- * Run: npx jest signin-screen.test.tsx
  */
 
 import React from 'react';
@@ -12,12 +10,25 @@ import { SignInScreen } from '../signin-screen';
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
-const mockLogin    = jest.fn();
-const mockReplace  = jest.fn();
-const mockNavigate = jest.fn();
+const mockDispatch  = jest.fn();
+const mockReplace   = jest.fn();
+const mockNavigate  = jest.fn();
 
-jest.mock('../../context/auth-context', () => ({
-    useAuth: () => ({ login: mockLogin }),
+jest.mock('../../../../stores/store', () => ({
+    useAppDispatch: () => mockDispatch,
+    useAppSelector: jest.fn(),
+}));
+
+jest.mock('../../store/authSlice', () => ({
+    login: Object.assign(
+        jest.fn(() => ({ type: 'auth/login' })),
+        {
+            fulfilled: {
+                match: (action: any) => action?.type === 'auth/login/fulfilled',
+            },
+        }
+    ),
+    selectIsLoggedIn: jest.fn(),
 }));
 
 jest.spyOn(Alert, 'alert');
@@ -108,29 +119,24 @@ describe('SignInScreen — input interaction', () => {
 
     it('updates username when user types', () => {
         renderScreen();
-        const input = screen.getByDisplayValue('duynguyen');
-        fireEvent.changeText(input, 'newuser');
+        fireEvent.changeText(screen.getByDisplayValue('duynguyen'), 'newuser');
         expect(screen.getByDisplayValue('newuser')).toBeTruthy();
     });
 
     it('updates password when user types', () => {
         renderScreen();
-        const input = screen.getByDisplayValue('12345678');
-        fireEvent.changeText(input, 'newpassword');
+        fireEvent.changeText(screen.getByDisplayValue('12345678'), 'newpassword');
         expect(screen.getByDisplayValue('newpassword')).toBeTruthy();
     });
 
     it('password input is hidden by default (secureTextEntry)', () => {
         renderScreen();
-        const passwordInput = screen.getByDisplayValue('12345678');
-        expect(passwordInput.props.secureTextEntry).toBe(true);
+        expect(screen.getByDisplayValue('12345678').props.secureTextEntry).toBe(true);
     });
 
     it('toggles password visibility when eye icon pressed', () => {
         renderScreen();
-        const passwordInput = screen.getByDisplayValue('12345678');
-        expect(passwordInput.props.secureTextEntry).toBe(true);
-
+        expect(screen.getByDisplayValue('12345678').props.secureTextEntry).toBe(true);
         fireEvent.press(screen.getByText('👁'));
         expect(screen.getByDisplayValue('12345678').props.secureTextEntry).toBe(false);
     });
@@ -172,7 +178,6 @@ describe('SignInScreen — tabs', () => {
 
     it('Login tab is active by default', () => {
         renderScreen();
-        // Login tab exists and screen is in login state (no navigation called)
         expect(screen.getByText('Login')).toBeTruthy();
         expect(mockNavigate).not.toHaveBeenCalled();
     });
@@ -194,19 +199,23 @@ describe('SignInScreen — tabs', () => {
 
 describe('SignInScreen — sign in success', () => {
 
-    it('calls login with username and password', async () => {
-        mockLogin.mockResolvedValue(true);
+    beforeEach(() => {
+        mockDispatch.mockResolvedValue({ type: 'auth/login/fulfilled' });
+    });
+
+    it('calls dispatch with login action', async () => {
+        const { login } = require('../../store/authSlice');
         renderScreen();
 
         await act(async () => {
             fireEvent.press(screen.getByText('Sign In'));
         });
 
-        expect(mockLogin).toHaveBeenCalledWith('duynguyen', '12345678');
+        expect(mockDispatch).toHaveBeenCalled();
+        expect(login).toHaveBeenCalledWith({ username: 'duynguyen', password: '12345678' });
     });
 
     it('navigates to Main on successful login', async () => {
-        mockLogin.mockResolvedValue(true);
         renderScreen();
 
         await act(async () => {
@@ -217,7 +226,6 @@ describe('SignInScreen — sign in success', () => {
     });
 
     it('does not show alert on successful login', async () => {
-        mockLogin.mockResolvedValue(true);
         renderScreen();
 
         await act(async () => {
@@ -228,7 +236,7 @@ describe('SignInScreen — sign in success', () => {
     });
 
     it('calls login with updated credentials after user types', async () => {
-        mockLogin.mockResolvedValue(true);
+        const { login } = require('../../store/authSlice');
         renderScreen();
 
         fireEvent.changeText(screen.getByDisplayValue('duynguyen'), 'admin');
@@ -238,7 +246,7 @@ describe('SignInScreen — sign in success', () => {
             fireEvent.press(screen.getByText('Sign In'));
         });
 
-        expect(mockLogin).toHaveBeenCalledWith('admin', 'secret123');
+        expect(login).toHaveBeenCalledWith({ username: 'admin', password: 'secret123' });
     });
 });
 
@@ -247,7 +255,7 @@ describe('SignInScreen — sign in success', () => {
 describe('SignInScreen — sign in failure', () => {
 
     it('shows alert on failed login', async () => {
-        mockLogin.mockResolvedValue(false);
+        mockDispatch.mockResolvedValue({ type: 'auth/login/rejected' });
         renderScreen();
 
         await act(async () => {
@@ -261,7 +269,7 @@ describe('SignInScreen — sign in failure', () => {
     });
 
     it('does not navigate on failed login', async () => {
-        mockLogin.mockResolvedValue(false);
+        mockDispatch.mockResolvedValue({ type: 'auth/login/rejected' });
         renderScreen();
 
         await act(async () => {
@@ -271,8 +279,8 @@ describe('SignInScreen — sign in failure', () => {
         expect(mockReplace).not.toHaveBeenCalled();
     });
 
-    it('shows alert when login throws an error', async () => {
-        mockLogin.mockRejectedValue(new Error('Network error'));
+    it('shows alert when dispatch throws', async () => {
+        mockDispatch.mockRejectedValue(new Error('Network error'));
         renderScreen();
 
         await act(async () => {
@@ -280,7 +288,10 @@ describe('SignInScreen — sign in failure', () => {
         });
 
         await waitFor(() => {
-            expect(Alert.alert).toHaveBeenCalled();
+            expect(Alert.alert).toHaveBeenCalledWith(
+                'Login failed',
+                'Something went wrong. Please try again.'
+            );
         });
     });
 });
@@ -289,14 +300,14 @@ describe('SignInScreen — sign in failure', () => {
 
 describe('SignInScreen — login called correctly', () => {
 
-    it('calls login exactly once per press', async () => {
-        mockLogin.mockResolvedValue(true);
+    it('calls dispatch exactly once per press', async () => {
+        mockDispatch.mockResolvedValue({ type: 'auth/login/fulfilled' });
         renderScreen();
 
         await act(async () => {
             fireEvent.press(screen.getByText('Sign In'));
         });
 
-        expect(mockLogin).toHaveBeenCalledTimes(1);
+        expect(mockDispatch).toHaveBeenCalledTimes(1);
     });
 });

@@ -3,8 +3,6 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image, StyleSheet } from 'react-native';
 
-import ListScreen from '../../../modules/list/screens/list-screen';
-import { ProfileScreen } from '../../../modules/profile/screens/profile-screen';
 import ShopNavigator from '../../../modules/shop/navigation/shop-navigator';
 import ProfileNavigator from '../../../modules/profile/navigation/profile-navigator';
 
@@ -29,18 +27,6 @@ const MainNavigator: React.FC<IMainNavigator> = ({ navigation }) => {
                     ),
                 }}
             />
-
-            <Tab.Screen
-                name="Tab3"
-                component={ListScreen}
-                options={{
-                    tabBarLabel: 'List',
-                    tabBarIcon: () => (
-                        <Image source={require('../../../assets/images/list.png')} style={styles.icon} />
-                    ),
-                }}
-            />
-
             <Tab.Screen
                 name="Profile"
                 component={ProfileNavigator}

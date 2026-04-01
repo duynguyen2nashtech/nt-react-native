@@ -15,6 +15,7 @@ import { RootState } from '../../../reducers/root-reducer';
 
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { ProfileStackParamList } from '../../profile/navigation/profile-navigator';
+import { Product } from '../../../shared/services/product-service';
 
 type OrderDetailScreenProps = NativeStackScreenProps<ProfileStackParamList, 'OrderDetail'>;
 
@@ -72,7 +73,7 @@ const InfoRow: React.FC<{ label: string; value: string; valueColor?: string }> =
 
 const OrderDetailScreen: React.FC<OrderDetailScreenProps> = ({ navigation, route }) => {
     const { order } = route.params;
-    const products  = useSelector((state: RootState) => state.shop.products);
+    const products = useSelector((state: RootState) => state.shop.products) as Product[];
     const statusCfg = STATUS_CONFIG[order.status] ?? STATUS_CONFIG['pending'];
 
     // Calculate subtotal, shipping (free over $100), tax

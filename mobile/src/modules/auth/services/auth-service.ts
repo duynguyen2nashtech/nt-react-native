@@ -29,7 +29,6 @@ export const AuthService = {
         });
 
         const result = await response.json();
-        console.log('login result:', result);
 
         if (!result.status) return null;
 
@@ -50,7 +49,6 @@ export const AuthService = {
             TokenService.saveToken(newToken),
         ]);
 
-        console.log('[AUTH] login: token & user saved');
         return { user, token: newToken };
     },
 
@@ -95,8 +93,6 @@ export const AuthService = {
         });
 
         const rawText = await response.text();
-        console.log('register status:', response.status);
-        console.log('register raw:', rawText);
 
         const result = JSON.parse(rawText);
 
@@ -110,7 +106,6 @@ export const AuthService = {
         await TokenService.saveToken(token);
         await DatabaseService.saveProfile(user);
 
-        console.log('[AUTH] register: token & profile saved');
         return user;
     },
 };

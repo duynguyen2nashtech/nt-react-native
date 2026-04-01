@@ -5,13 +5,11 @@ const TOKEN_KEY = 'auth_token';
 
 export const TokenService = {
     async saveToken(token: string): Promise<void> {
-        console.log('auth_token:', token);
         await EncryptedStorage.setItem(TOKEN_KEY, token);
     },
 
     async getToken(): Promise<string | null> {
         const token = await EncryptedStorage.getItem(TOKEN_KEY);
-        console.log('Retrieved auth_token:', token);
         return token;
     },
 
