@@ -1,6 +1,6 @@
 /**
  * Tests for ProductDetailScreen
- * Location: src/modules/shop/screens/__tests__/product-detail-screen.test.tsx
+ * Location: src/features/shop/screens/__tests__/product-detail-screen.test.tsx
  *
  * Run: npx jest product-detail-screen.test.tsx
  */
@@ -8,7 +8,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react-native';
 import { ActivityIndicator } from 'react-native';
-import { ProductDetailScreen } from '../product-detail-screen';
+import { ProductDetailScreen } from '../productDetailScreen';
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
@@ -21,10 +21,16 @@ jest.mock('../../../../store/store', () => ({
 }));
 
 jest.mock('../../store/shopSlice', () => ({
-    fetchProductById:      jest.fn(() => ({ type: 'shop/fetchProductById' })),
-    clearSelectedProduct:  jest.fn(() => ({ type: 'shop/clearSelectedProduct' })),
+    // thunks
+    fetchProductById:     jest.fn(() => ({ type: 'shop/fetchProductById' })),
+    fetchProductReviews:  jest.fn(() => ({ type: 'shop/fetchProductReviews' })),
+    clearSelectedProduct: jest.fn(() => ({ type: 'shop/clearSelectedProduct' })),
+    clearReviews:         jest.fn(() => ({ type: 'shop/clearReviews' })),
+    // selectors
     selectSelectedProduct: jest.fn(),
     selectDetailStatus:    jest.fn(),
+    selectReviews:         jest.fn(),
+    selectReviewStatus:    jest.fn(),
 }));
 
 jest.mock('../../../cart/store/cartSlice', () => ({
@@ -34,7 +40,12 @@ jest.mock('../../../cart/store/cartSlice', () => ({
 // ── Imports after mocks ───────────────────────────────────────────────────────
 
 import { useAppSelector } from '../../../../store/store';
-import { selectSelectedProduct, selectDetailStatus } from '../../store/shopSlice';
+import {
+    selectSelectedProduct,
+    selectDetailStatus,
+    selectReviews,
+    selectReviewStatus,
+} from '../../store/shopSlice';
 
 // ── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -51,8 +62,22 @@ const mockProduct = {
 
 const mockProductLongDesc = {
     ...mockProduct,
-    description: 'A'.repeat(200), // longer than 160 chars to trigger Read more
+    description: 'A'.repeat(200),
 };
+
+const mockReviews = [
+    {
+        id: 1,
+        productId: 1,
+        userId: 8,
+        rating: 5,
+        message: 'Great product!',
+        resolvedName: 'Harry Smith',
+        initials: 'HS',
+        createdAt: '2026-04-01T13:13:38.780Z',
+        updatedAt: '2026-04-01T13:13:38.780Z',
+    },
+];
 
 const mockNavigation = {
     goBack:    mockGoBack,
@@ -69,15 +94,21 @@ const mockRoute = {
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function setupSelectors({
-    product = mockProduct as any,
-    status  = 'succeeded',
+    product      = mockProduct as any,
+    status       = 'succeeded',
+    reviews      = [] as any[],
+    reviewStatus = 'succeeded',
 }: {
-    product?: any;
-    status?:  string;
+    product?:      any;
+    status?:       string;
+    reviews?:      any[];
+    reviewStatus?: string;
 } = {}) {
     (useAppSelector as jest.Mock).mockImplementation((selector: any) => {
         if (selector === selectSelectedProduct) return product;
         if (selector === selectDetailStatus)    return status;
+        if (selector === selectReviews)         return reviews;
+        if (selector === selectReviewStatus)    return reviewStatus;
         return null;
     });
 }
@@ -167,26 +198,7 @@ describe('ProductDetailScreen — success', () => {
     it('shows formatted price', () => {
         setupSelectors();
         renderScreen();
-        // price renders as nested Text — match by partial content
         expect(screen.getByText(/80\.95/)).toBeTruthy();
-    });
-
-    it('shows price unit', () => {
-        setupSelectors();
-        renderScreen();
-        expect(screen.getByText(/dollar/)).toBeTruthy();
-    });
-
-    it('shows Description section title', () => {
-        setupSelectors();
-        renderScreen();
-        expect(screen.getByText('Description')).toBeTruthy();
-    });
-
-    it('shows product description', () => {
-        setupSelectors();
-        renderScreen();
-        expect(screen.getByText(mockProduct.description)).toBeTruthy();
     });
 
     it('shows Add to Cart button', () => {
@@ -200,6 +212,60 @@ describe('ProductDetailScreen — success', () => {
         renderScreen();
         expect(screen.getByText('Buy Now')).toBeTruthy();
     });
+
+    it('shows Key Features section', () => {
+        setupSelectors();
+        renderScreen();
+        expect(screen.getByText('Key Features')).toBeTruthy();
+    });
+
+    it('shows Product Description section', () => {
+        setupSelectors();
+        renderScreen();
+        expect(screen.getByText('Product Description')).toBeTruthy();
+    });
+
+    it('shows User Reviews section', () => {
+        setupSelectors();
+        renderScreen();
+        expect(screen.getByText('User Reviews')).toBeTruthy();
+    });
+});
+
+// ── Reviews ───────────────────────────────────────────────────────────────────
+
+describe('ProductDetailScreen — reviews', () => {
+
+    it('shows review spinner when reviewStatus is loading', () => {
+        setupSelectors({ reviewStatus: 'loading' });
+        const { UNSAFE_getAllByType } = renderScreen();
+        // one for product loading, one for reviews
+        expect(UNSAFE_getAllByType(ActivityIndicator).length).toBeGreaterThan(0);
+    });
+
+    it('shows no reviews message when reviews are empty', () => {
+        setupSelectors({ reviews: [] });
+        renderScreen();
+        expect(screen.getByText('No reviews yet.')).toBeTruthy();
+    });
+
+    it('shows review message when reviews are loaded', () => {
+        setupSelectors({ reviews: mockReviews });
+        renderScreen();
+        expect(screen.getByText('Great product!')).toBeTruthy();
+    });
+
+    it('shows reviewer resolved name', () => {
+        setupSelectors({ reviews: mockReviews });
+        renderScreen();
+        expect(screen.getByText('Harry Smith')).toBeTruthy();
+    });
+
+    it('shows error message when reviewStatus is failed', () => {
+        setupSelectors({ reviewStatus: 'failed' });
+        renderScreen();
+        expect(screen.getByText('Failed to load reviews.')).toBeTruthy();
+    });
 });
 
 // ── Navigation ────────────────────────────────────────────────────────────────
@@ -209,7 +275,7 @@ describe('ProductDetailScreen — navigation', () => {
     it('calls navigation.goBack when back arrow is pressed', () => {
         setupSelectors();
         renderScreen();
-        fireEvent.press(screen.getByText('←'));
+        fireEvent.press(screen.getByText('‹'));
         expect(mockGoBack).toHaveBeenCalledTimes(1);
     });
 });
@@ -232,10 +298,9 @@ describe('ProductDetailScreen — Add to Cart', () => {
         expect(screen.getByText('✓ Added!')).toBeTruthy();
     });
 
-    it('does not dispatch when product is null', () => {
+    it('does not show Add to Cart when product is null', () => {
         setupSelectors({ product: null, status: 'succeeded' });
         renderScreen();
-        // product not found screen — no cart button present
         expect(screen.queryByText('Add to Cart')).toBeNull();
     });
 });
@@ -266,8 +331,9 @@ describe('ProductDetailScreen — description', () => {
     it('shows truncated description initially when long', () => {
         setupSelectors({ product: mockProductLongDesc });
         renderScreen();
-        // Should show truncated text with ellipsis
-        expect(screen.getByText(mockProductLongDesc.description.slice(0, 160) + '…')).toBeTruthy();
+        expect(
+            screen.getByText(mockProductLongDesc.description.slice(0, 160) + '…')
+        ).toBeTruthy();
     });
 
     it('collapses description again after pressing Read less', () => {
@@ -286,13 +352,30 @@ describe('ProductDetailScreen — useEffect', () => {
     it('dispatches fetchProductById on mount', () => {
         setupSelectors();
         renderScreen();
-        expect(mockDispatch).toHaveBeenCalled();
-    });
-
-    it('dispatches fetchProductById with correct productId', () => {
-        setupSelectors();
-        renderScreen();
         const { fetchProductById } = require('../../store/shopSlice');
         expect(fetchProductById).toHaveBeenCalledWith(1);
+    });
+
+    it('dispatches fetchProductReviews on mount', () => {
+        setupSelectors();
+        renderScreen();
+        const { fetchProductReviews } = require('../../store/shopSlice');
+        expect(fetchProductReviews).toHaveBeenCalledWith(1);
+    });
+
+    it('dispatches clearSelectedProduct on unmount', () => {
+        setupSelectors();
+        const { unmount } = renderScreen();
+        unmount();
+        const { clearSelectedProduct } = require('../../store/shopSlice');
+        expect(clearSelectedProduct).toHaveBeenCalled();
+    });
+
+    it('dispatches clearReviews on unmount', () => {
+        setupSelectors();
+        const { unmount } = renderScreen();
+        unmount();
+        const { clearReviews } = require('../../store/shopSlice');
+        expect(clearReviews).toHaveBeenCalled();
     });
 });

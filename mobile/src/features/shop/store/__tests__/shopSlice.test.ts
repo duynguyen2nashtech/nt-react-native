@@ -22,7 +22,7 @@ import { ProductService } from '../../../../services/productService';
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
-jest.mock('../../../../shared/services/product-service');
+jest.mock('../../../../services/productService');
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 

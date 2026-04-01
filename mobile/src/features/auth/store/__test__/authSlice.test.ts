@@ -12,26 +12,26 @@ import authReducer, {
     selectIsLoggedIn,
     selectAuthLoading,
 } from '../authSlice';
-import { AuthService } from '../../services/auth-service';
+import { AuthService } from '../../services/authService';
 import { UserService } from '../../../profile/services/userService';
 import { TokenService } from '../../../../services/storage/tokenService';
 
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
-jest.mock('../../services/auth-service', () => ({
+jest.mock('../../services/authService', () => ({
     AuthService: {
         login: jest.fn(),
     },
 }));
 
-jest.mock('../../../profile/services/user-service', () => ({
+jest.mock('../../../profile/services/userService', () => ({
     UserService: {
         clearLocalProfile: jest.fn(),
     },
 }));
 
-jest.mock('../../../../shared/services/token-service', () => ({
+jest.mock('../../../../services/storage/tokenService', () => ({
     TokenService: {
         getToken: jest.fn(),
     },

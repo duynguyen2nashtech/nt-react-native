@@ -5,12 +5,12 @@
 
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
-import { ProfileScreen } from '../profile-screen';
+import { ProfileScreen } from '../profileScreen';
 import { UserService, ProfileData } from '../../services/userService';
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
-jest.mock('../../services/user-service');
+jest.mock('../../services/userService');
 
 const mockDispatch = jest.fn();
 

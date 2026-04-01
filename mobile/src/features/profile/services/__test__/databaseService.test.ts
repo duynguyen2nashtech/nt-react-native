@@ -1,4 +1,4 @@
-import { DatabaseService } from '../database-service';
+import { DatabaseService } from '../databaseService';
 import { ProfileData } from '../userService';
 
 // ── Mock react-native-sqlite-storage ──────────────────────────────────────────

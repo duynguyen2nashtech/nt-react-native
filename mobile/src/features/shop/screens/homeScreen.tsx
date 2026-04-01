@@ -20,7 +20,7 @@ import {
 } from '../store/shopSlice';
 import { selectIsLoggedIn } from '../../auth/store/authSlice';
 import ProductList from '../components/ProductList';
-import type { HomeScreenProps } from '../navigation/shop-navigator';
+import type { HomeScreenProps } from '../navigation/shopNavigator';
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     const dispatch = useAppDispatch();

@@ -1,6 +1,6 @@
 // src/modules/auth/store/authSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { AuthService } from '../services/auth-service';
+import { AuthService } from '../services/authService';
 import { UserService } from '../../profile/services/userService';
 
 import { RootState } from '../../../store/rootReducer';

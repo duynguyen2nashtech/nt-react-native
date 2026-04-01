@@ -7,8 +7,8 @@ import store from './src/store/store';
 import { useAppDispatch, useAppSelector } from './src/store/store';
 import { restoreSession, selectIsLoggedIn, selectAuthLoading } from './src/features/auth/store/authSlice';
 
-import { SignInScreen } from './src/features/auth/screens/signin-screen';
-import { SignUpScreen } from './src/features/auth/screens/signup-screen';
+import { SignInScreen } from './src/features/auth/screens/signinScreen';
+import { SignUpScreen } from './src/features/auth/screens/signupScreen';
 import MainNavigator from './src/navigation/main-navigator';
 
 const Stack = createNativeStackNavigator();

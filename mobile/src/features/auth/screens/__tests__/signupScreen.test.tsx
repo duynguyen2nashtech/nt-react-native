@@ -8,13 +8,13 @@
 import React from 'react';
 import { render, screen, fireEvent, act, waitFor } from '@testing-library/react-native';
 import { Alert } from 'react-native';
-import { SignUpScreen } from '../signup-screen';
+import { SignUpScreen } from '../signupScreen';
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
 const mockReplace = jest.fn();
 
-jest.mock('../../../profile/services/user-service', () => ({
+jest.mock('../../../profile/services/userService', () => ({
     UserService: {
         register: jest.fn(),
     },

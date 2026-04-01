@@ -1,17 +1,10 @@
-/**
- * Tests for ProductService
- * Location: src/shared/services/__tests__/product-service.test.ts
- *
- * Run: npx jest product-service.test.ts
- */
-
 import { ProductService } from '../productService';
 import { TokenService } from '../storage/tokenService';
 
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
-jest.mock('../token-service');
+jest.mock('../storage/tokenService');
 
 const mockFetch = jest.fn();
 global.fetch = mockFetch;

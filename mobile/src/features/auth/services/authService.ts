@@ -1,6 +1,6 @@
 
 import { TokenService } from '../../../services/storage/tokenService';
-import { DatabaseService } from '../../profile/services/database-service';
+import { DatabaseService } from '../../profile/services/databaseService';
 import { ProfileData } from '../../profile/services/userService';
 import { User } from '../models/user';
 

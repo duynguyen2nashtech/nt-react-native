@@ -26,7 +26,7 @@ import {
     EnrichedReview,
 } from '../store/shopSlice';
 import { addToCartAsync } from '../../cart/store/cartSlice';
-import type { ProductDetailScreenProps } from '../navigation/shop-navigator'; // ← import from navigator
+import type { ProductDetailScreenProps } from '../navigation/shopNavigator'; // ← import from navigator
 import { Review } from '../../../services/productService';
 
 const { width } = Dimensions.get('window');

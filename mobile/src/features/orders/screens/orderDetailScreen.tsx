@@ -14,7 +14,7 @@ import { RootState } from '../../../store/rootReducer';
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { ProfileStackParamList } from '../../profile/navigation/profile-navigator';
+import type { ProfileStackParamList } from '../../profile/navigation/profileNavigator';
 import { Product } from '../../../services/productService';
 
 type OrderDetailScreenProps = NativeStackScreenProps<ProfileStackParamList, 'OrderDetail'>;

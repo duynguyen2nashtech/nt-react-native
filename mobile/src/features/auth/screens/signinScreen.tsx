@@ -11,7 +11,7 @@ import {
     Platform,
 } from 'react-native';
 // import { useAuth } from '../context/auth-context';
-import { AuthService } from '../services/auth-service';
+import { AuthService } from '../services/authService';
 import { login } from '../store/authSlice';
 import { useAppDispatch } from '../../../store/store';
 

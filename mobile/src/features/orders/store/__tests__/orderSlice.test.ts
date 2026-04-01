@@ -12,7 +12,7 @@ import { clearOrders, fetchOrders, Order } from '../ordersSlice';
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
-jest.mock('../../../../shared/services/token-service', () => ({
+jest.mock('../../../../services/storage/tokenService', () => ({
     TokenService: {
         getToken: jest.fn(),
     },

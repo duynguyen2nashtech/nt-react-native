@@ -2,8 +2,8 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { HomeScreen } from '../screens/home-screen';
-import { ProductDetailScreen } from '../screens/product-detail-screen';
+import { HomeScreen } from '../screens/homeScreen';
+import { ProductDetailScreen } from '../screens/productDetailScreen';
 
 export type ShopStackParamList = {
     Home: undefined;

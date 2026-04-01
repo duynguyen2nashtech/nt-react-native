@@ -1,11 +1,5 @@
-/**
- * Tests for TokenService
- * Location: src/shared/services/__tests__/token-service.test.ts
- *
- * Run: npx jest token-service.test.ts
- */
 
-import { TokenService } from '../token-service';
+import { TokenService } from '../tokenService';
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 

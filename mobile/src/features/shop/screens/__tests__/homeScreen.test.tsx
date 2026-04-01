@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react-native';
-import { HomeScreen } from '../home-screen';
+import { HomeScreen } from '../homeScreen';
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 

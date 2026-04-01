@@ -1,19 +1,12 @@
-/**
- * Tests for AuthService
- * Location: src/modules/auth/services/__tests__/auth-service.test.ts
- *
- * Run: npx jest auth-service.test.ts
- */
+import { AuthService, RegisterPayload } from '../authService';
 
-import { AuthService, RegisterPayload } from '../auth-service';
-
-import { DatabaseService } from '../../../profile/services/database-service';
+import { DatabaseService } from '../../../profile/services/databaseService';
 import { TokenService } from '../../../../services/storage/tokenService';
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
-jest.mock('../../../../shared/services/token-service');
-jest.mock('../../../profile/services/database-service');
+jest.mock('../../../../services/storage/tokenService');
+jest.mock('../../../profile/services/databaseService');
 
 const mockFetch = jest.fn();
 global.fetch = mockFetch;

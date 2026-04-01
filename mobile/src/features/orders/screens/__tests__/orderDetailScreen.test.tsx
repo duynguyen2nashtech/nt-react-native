@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react-native';
-import { OrderDetailScreen } from '../order-detail-screen';
+import { OrderDetailScreen } from '../orderDetailScreen';
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 

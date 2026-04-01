@@ -2,10 +2,10 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { ProfileScreen } from '../screens/profile-screen';
-import { OrderHistoryScreen } from '../../orders/screens/order-history-screen';
+import { ProfileScreen } from '../screens/profileScreen';
+import { OrderHistoryScreen } from '../../orders/screens/orderHistoryScreen';
 import { Order } from '../../orders/store/ordersSlice';
-import { OrderDetailScreen } from '../../orders/screens/order-detail-screen';
+import { OrderDetailScreen } from '../../orders/screens/orderDetailScreen';
 
 export type ProfileStackParamList = {
     ProfileMain:  undefined;

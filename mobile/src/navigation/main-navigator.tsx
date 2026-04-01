@@ -2,8 +2,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image, StyleSheet } from 'react-native';
-import ShopNavigator from '../features/shop/navigation/shop-navigator';
-import ProfileNavigator from '../features/profile/navigation/profile-navigator';
+import ShopNavigator from '../features/shop/navigation/shopNavigator';
+import ProfileNavigator from '../features/profile/navigation/profileNavigator';
 
 
 

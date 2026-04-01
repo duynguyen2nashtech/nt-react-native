@@ -1,18 +1,11 @@
-/**
- * Tests for user-service.ts
- * Location: src/modules/profile/services/__tests__/user-service.test.ts
- *
- * Run: npx jest user-service.test.ts
- */
-
 import { UserService, ProfileData } from '../userService';
 
-import { DatabaseService } from '../database-service';
+import { DatabaseService } from '../databaseService';
 import { TokenService } from '../../../../services/storage/tokenService';
 
 // ── Mock dependencies ─────────────────────────────────────────────────────────
 
-jest.mock('../../../../shared/services/token-service', () => ({
+jest.mock('../../../../services/storage/tokenService', () => ({
     TokenService: {
         saveToken: jest.fn(),
         getToken:  jest.fn(),
@@ -20,7 +13,7 @@ jest.mock('../../../../shared/services/token-service', () => ({
     },
 }));
 
-jest.mock('../database-service', () => ({
+jest.mock('../databaseService', () => ({
     DatabaseService: {
         saveProfile:  jest.fn(),
         getProfile:   jest.fn(),

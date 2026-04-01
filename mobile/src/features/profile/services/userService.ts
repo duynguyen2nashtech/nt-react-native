@@ -1,7 +1,7 @@
 
 import { decode } from 'base-64';
 
-import { DatabaseService } from './database-service';
+import { DatabaseService } from './databaseService';
 
 import { TokenService } from '../../../services/storage/tokenService';
 import { BASE_URL } from '../../../services/api/client';
