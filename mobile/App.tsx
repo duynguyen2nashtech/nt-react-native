@@ -3,12 +3,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ActivityIndicator, View } from 'react-native';
 import { Provider } from 'react-redux';
-import store from './src/stores/store';
-import { useAppDispatch, useAppSelector } from './src/stores/store';
-import { restoreSession, selectIsLoggedIn, selectAuthLoading } from './src/modules/auth/store/authSlice';
-import MainNavigator from './src/shared/navigation/navigator/main-navigator';
-import { SignInScreen } from './src/modules/auth/screens/signin-screen';
-import { SignUpScreen } from './src/modules/auth/screens/signup-screen';
+import store from './src/store/store';
+import { useAppDispatch, useAppSelector } from './src/store/store';
+import { restoreSession, selectIsLoggedIn, selectAuthLoading } from './src/features/auth/store/authSlice';
+
+import { SignInScreen } from './src/features/auth/screens/signin-screen';
+import { SignUpScreen } from './src/features/auth/screens/signup-screen';
+import MainNavigator from './src/navigation/main-navigator';
 
 const Stack = createNativeStackNavigator();
 
