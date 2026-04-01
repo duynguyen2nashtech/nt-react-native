@@ -41,6 +41,18 @@ export interface RegisterPayload {
     age: number;
 }
 
+export interface UserSummary {
+    id: number;
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    age?: number;
+    role: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export const UserService = {
 
     /**
@@ -75,6 +87,30 @@ export const UserService = {
         await DatabaseService.saveProfile(user);
 
         return user;
+    },
+
+        async getAll(): Promise<UserSummary[]> {
+        try {
+            const token = await TokenService.getToken();
+            if (!token) return [];
+ 
+            const response = await fetch(`${BASE_URL}/user/all`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+ 
+            const rawText = await response.text();
+            const result  = JSON.parse(rawText);
+ 
+            if (result.status && Array.isArray(result.data)) return result.data;
+            return [];
+        } catch (e) {
+            console.warn('UserService.getAll error:', e);
+            return [];
+        }
     },
 
     /**

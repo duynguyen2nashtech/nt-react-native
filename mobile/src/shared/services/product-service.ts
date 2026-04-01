@@ -1,11 +1,15 @@
 import { BASE_URL } from '../config/api-config';
 import { TokenService } from './token-service';
 
+// ─── Types ────────────────────────────────────────────────────────────────────
 export interface Review {
     id: number;
+    productId: number;
+    userId: number;
     userName: string;
     avatar?: string;
     rating: number;
+    message: string;
     comment: string;
     createdAt: string;
 }
@@ -30,6 +34,7 @@ export interface Product {
     updatedAt: string;
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 async function authHeaders(): Promise<Record<string, string>> {
     const token = await TokenService.getToken();
     return {
@@ -38,6 +43,7 @@ async function authHeaders(): Promise<Record<string, string>> {
     };
 }
 
+// ─── Service ──────────────────────────────────────────────────────────────────
 export const ProductService = {
     async getProducts(): Promise<Product[]> {
         try {
@@ -66,6 +72,21 @@ export const ProductService = {
         } catch (e) {
             console.warn('getProductById error:', e);
             return null;
+        }
+    },
+
+    async getReviews(productId: number): Promise<Review[]> {
+        try {
+            const response = await fetch(`${BASE_URL}/product/${productId}/review`, {
+                method: 'GET',
+                headers: await authHeaders(),
+            });
+            const result = await response.json();
+            if (result.status && Array.isArray(result.data)) return result.data;
+            return [];
+        } catch (e) {
+            console.warn('getReviews error:', e);
+            return [];
         }
     },
 
