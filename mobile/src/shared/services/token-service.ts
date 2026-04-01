@@ -1,31 +1,22 @@
-import EncryptedStorage from 'react-native-encrypted-storage';
-import { User } from '../../modules/auth/models/user';
-
+import EncryptedStorage from 'react-native-encrypted-storage'
 
 const TOKEN_KEY = 'auth_token';
-// const USER_KEY = 'auth_user';
+
 
 export const TokenService = {
     async saveToken(token: string): Promise<void> {
+        console.log('auth_token:', token);
         await EncryptedStorage.setItem(TOKEN_KEY, token);
     },
 
     async getToken(): Promise<string | null> {
-        return await EncryptedStorage.getItem(TOKEN_KEY);
+        const token = await EncryptedStorage.getItem(TOKEN_KEY);
+        console.log('Retrieved auth_token:', token);
+        return token;
     },
-
-    // async saveUser(user: User): Promise<void> {
-    //     await EncryptedStorage.setItem(USER_KEY, JSON.stringify(user));
-    // },
-
-    // async getUser(): Promise<User | null> {
-    //     const raw = await EncryptedStorage.getItem(USER_KEY);
-    //     return raw ? JSON.parse(raw) : null;
-    // },
 
     async clearAll(): Promise<void> {
         await EncryptedStorage.removeItem(TOKEN_KEY);
-        // await EncryptedStorage.removeItem(USER_KEY);
     },
 
     async debugStorage(): Promise<void> {

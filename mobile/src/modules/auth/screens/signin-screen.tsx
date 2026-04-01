@@ -11,6 +11,7 @@ import {
     Platform,
 } from 'react-native';
 import { useAuth } from '../context/auth-context';
+import { AuthService } from '../services/auth-service';
 
 
 interface ISignInScreen {

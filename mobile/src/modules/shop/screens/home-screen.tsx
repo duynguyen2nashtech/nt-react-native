@@ -1,4 +1,3 @@
-// src/modules/shop/screens/home-screen.tsx
 import React, { useEffect } from 'react';
 import {
     ActivityIndicator,
@@ -19,12 +18,12 @@ import {
     selectShopError,
     selectSearch,
 } from '../store/shopSlice';
-// import { selectUser } from '../../auth/store/authSlice';
+
 import ProductList from '../components/ProductList';
 import type { HomeScreenProps } from '../navigation/shop-navigator';
 import { useAuth } from '../../auth/context/auth-context';
 
-// Use NativeStackScreenProps from the navigator — fixes the TS error
+
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     const dispatch = useAppDispatch();
 

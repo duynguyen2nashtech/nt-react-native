@@ -5,7 +5,6 @@ import { DatabaseService } from './database-service';
 
 const BASE_URL = 'http://10.0.2.2:3000';
 
-// ── Private helper — not exported ─────────────────────────────────────────────
 function decodeUserIdFromToken(token: string): number {
     try {
         const payload = token.split('.')[1];
@@ -84,46 +83,78 @@ export const UserService = {
      * Falls back to local SQLite if network fails.
      */
     async getProfile(): Promise<ProfileData | null> {
-    try {
+        try {
+            const token = await TokenService.getToken();
+
+            if (!token) {
+                console.warn('getProfile: no token — redirecting to login');
+                return null; 
+            }
+
+            const response = await fetch(`${BASE_URL}/user`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+
+            if (response.status === 401) {
+                console.warn('getProfile: token expired');
+                return null;
+            }
+
+            const rawText = await response.text();
+            const result  = JSON.parse(rawText);
+
+            if (result.status && result.data) {
+                await DatabaseService.saveProfile(result.data);
+                return result.data;
+            }
+
+            // ── API failed but token still valid — try SQLite ─────────────
+            const userId = decodeUserIdFromToken(token);
+            if (userId === -1) return null; 
+            return await DatabaseService.getProfile(userId);
+
+        } catch (e) {
+            console.warn('network error — fallback SQLite', e);
+            const token = await TokenService.getToken();
+            if (!token) return null;
+
+            const userId = decodeUserIdFromToken(token);
+            if (userId === -1) return null;
+            return await DatabaseService.getProfile(userId);
+        }
+    },
+
+    async updateProfile(payload: { firstName: string; lastName: string; age: number }) {
         const token = await TokenService.getToken();
 
-        if (!token) {
-            console.warn('getProfile: no token — reading from SQLite');
-            // ⚠️ No token = no userId = can't safely query
-            // Better to return null than wrong profile
-            return null;
-        }
-
-        const response = await fetch(`${BASE_URL}/user`, {
-            method: 'GET',
+        const response = await fetch(`${BASE_URL}/user`, {  
+            method: 'PATCH',
             headers: {
-                Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
+                Authorization:  `Bearer ${token}`,         
             },
+            body: JSON.stringify(payload),
         });
 
         const rawText = await response.text();
         const result  = JSON.parse(rawText);
 
-        if (result.status && result.data) {
-            await DatabaseService.saveProfile(result.data);
-            return result.data; // ✅ always use API data when available
+        if (!response.ok || !result.status) {
+            throw new Error(result.message ?? 'Update failed');
         }
 
-        console.warn('API failed — fallback SQLite');
-        // ✅ FIXED: pass userId decoded from token
-        const userId = decodeUserIdFromToken(token);
-        return await DatabaseService.getProfile(userId);
+        // Keep local SQLite in sync after a successful update
+        if (result.data) {
+            await DatabaseService.saveProfile(result.data);
+        }
 
-    } catch (e) {
-        console.warn('network error — fallback SQLite', e);
-        const token = await TokenService.getToken();
-        if (!token) return null;
-        // ✅ FIXED: pass userId
-        const userId = decodeUserIdFromToken(token);
-        return await DatabaseService.getProfile(userId);
-    }
-},
+        return result.data;
+    },
 
     /**
      * Call this on logout to wipe the local SQLite profile.
@@ -131,10 +162,9 @@ export const UserService = {
     async clearLocalProfile(): Promise<void> {
         const token = await TokenService.getToken();
 
-        // ✅ Clear only THIS user's profile, not all profiles
         if (token) {
             const userId = decodeUserIdFromToken(token);
-            await DatabaseService.clearProfile(userId); // ← specific user
+            await DatabaseService.clearProfile(userId); 
         }
 
         await TokenService.clearAll();

@@ -1,10 +1,3 @@
-/**
- * Tests for database-service.ts
- * Location: src/modules/profile/services/__tests__/database-service.test.ts
- *
- * Run: npx jest database-service.test.ts
- */
-
 import { DatabaseService } from '../database-service';
 import { ProfileData } from '../user-service';
 
@@ -20,8 +13,6 @@ jest.mock('react-native-sqlite-storage', () => ({
         openDatabase:  jest.fn(() => Promise.resolve(mockDb)),
     },
 }));
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
 
 const mockProfile: ProfileData = {
     id:        1,

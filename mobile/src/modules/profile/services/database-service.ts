@@ -1,11 +1,3 @@
-/**
- * Local SQLite storage using:
- * https://github.com/andpor/react-native-sqlite-storage
- *
- * Install:
- *   npm install react-native-sqlite-storage
- *   cd ios && pod install
- */
 import SQLite from 'react-native-sqlite-storage';
 import { ProfileData } from './user-service';
 
@@ -62,7 +54,7 @@ export const DatabaseService = {
     async getProfile(userId: number): Promise<ProfileData | null> {
         const database = await getDb();
         const [result] = await database.executeSql(
-            'SELECT * FROM profile WHERE id = ? LIMIT 1;', // ← WHERE id
+            'SELECT * FROM profile WHERE id = ? LIMIT 1;',
             [userId],
         );
 
@@ -94,7 +86,6 @@ export const DatabaseService = {
         console.log('[DB] Profile cleared for userId:', userId);
     },
 
-     // ✅ Clear ALL profiles (for logout)
     async clearAllProfiles(): Promise<void> {
         const database = await getDb();
         await database.executeSql('DELETE FROM profile;');

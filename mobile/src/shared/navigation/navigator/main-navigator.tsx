@@ -6,6 +6,7 @@ import { Image, StyleSheet } from 'react-native';
 import ListScreen from '../../../modules/list/screens/list-screen';
 import { ProfileScreen } from '../../../modules/profile/screens/profile-screen';
 import ShopNavigator from '../../../modules/shop/navigation/shop-navigator';
+import ProfileNavigator from '../../../modules/profile/navigation/profile-navigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -42,7 +43,7 @@ const MainNavigator: React.FC<IMainNavigator> = ({ navigation }) => {
 
             <Tab.Screen
                 name="Profile"
-                component={ProfileScreen}
+                component={ProfileNavigator}
                 options={{
                     tabBarLabel: 'Profile',
                     tabBarIcon: () => (

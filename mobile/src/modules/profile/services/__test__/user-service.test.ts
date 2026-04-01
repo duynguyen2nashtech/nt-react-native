@@ -27,7 +27,6 @@ jest.mock('../database-service', () => ({
     },
 }));
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
 
 const mockProfile: ProfileData = {
     id:        1,
@@ -50,8 +49,6 @@ function mockFetch(body: object, status = 200) {
         text: () => Promise.resolve(JSON.stringify(body)),
     }) as jest.Mock;
 }
-
-// ── register() ────────────────────────────────────────────────────────────────
 
 describe('UserService.register()', () => {
 
@@ -98,7 +95,6 @@ describe('UserService.register()', () => {
     });
 });
 
-// ── getProfile() ──────────────────────────────────────────────────────────────
 
 describe('UserService.getProfile()', () => {
 
@@ -122,7 +118,7 @@ describe('UserService.getProfile()', () => {
         expect(result).toEqual(mockProfile);
     });
 
-    // ✅ FIXED: no token → return null, NOT call DatabaseService.getProfile
+    
     it('returns null when no token', async () => {
         (TokenService.getToken as jest.Mock).mockResolvedValue(null);
 
@@ -133,7 +129,6 @@ describe('UserService.getProfile()', () => {
         expect(result).toBeNull();
     });
 
-    // ✅ FIXED: API fails → fallback uses getProfile(userId)
     it('falls back to SQLite with userId when API returns status false', async () => {
         (TokenService.getToken as jest.Mock).mockResolvedValue(mockToken);
         (DatabaseService.getProfile as jest.Mock).mockResolvedValue(mockProfile);
@@ -146,7 +141,6 @@ describe('UserService.getProfile()', () => {
         expect(result).toEqual(mockProfile);
     });
 
-    // ✅ FIXED: network error → fallback uses getProfile(userId)
     it('falls back to SQLite with userId on network error', async () => {
         (TokenService.getToken as jest.Mock).mockResolvedValue(mockToken);
         (DatabaseService.getProfile as jest.Mock).mockResolvedValue(mockProfile);
@@ -158,7 +152,6 @@ describe('UserService.getProfile()', () => {
         expect(result).toEqual(mockProfile);
     });
 
-    // ✅ FIXED: no token → null, DB never called
     it('returns null when no token and SQLite is empty', async () => {
         (TokenService.getToken as jest.Mock).mockResolvedValue(null);
 
@@ -168,7 +161,6 @@ describe('UserService.getProfile()', () => {
         expect(result).toBeNull();
     });
 
-    // ✅ NEW: API fails + SQLite empty → null
     it('returns null when API fails and SQLite is empty', async () => {
         (TokenService.getToken as jest.Mock).mockResolvedValue(mockToken);
         (DatabaseService.getProfile as jest.Mock).mockResolvedValue(null);
@@ -181,13 +173,11 @@ describe('UserService.getProfile()', () => {
     });
 });
 
-// ── clearLocalProfile() ───────────────────────────────────────────────────────
 
 describe('UserService.clearLocalProfile()', () => {
 
     beforeEach(() => jest.clearAllMocks());
 
-    // ✅ FIXED: clearProfile now called with userId decoded from token
     it('clears token and SQLite profile for correct user', async () => {
         (TokenService.getToken as jest.Mock).mockResolvedValue(mockToken);
         (TokenService.clearAll as jest.Mock).mockResolvedValue(undefined);
@@ -199,7 +189,6 @@ describe('UserService.clearLocalProfile()', () => {
         expect(TokenService.clearAll).toHaveBeenCalled();
     });
 
-    // ✅ NEW: no token → only clears TokenService, not DB
     it('only clears token when no token found', async () => {
         (TokenService.getToken as jest.Mock).mockResolvedValue(null);
         (TokenService.clearAll as jest.Mock).mockResolvedValue(undefined);
